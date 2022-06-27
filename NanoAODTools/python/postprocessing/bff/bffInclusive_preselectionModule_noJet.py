@@ -9,7 +9,7 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collection, Object
 from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
-from PhysicsTools.NanoAODTools.postprocessing.bff import bffBtagEff #contains jet information
+#from PhysicsTools.NanoAODTools.postprocessing.bff import bffBtagEff #contains jet information
 import numpy as np
 from root_numpy import tree2array
 
@@ -24,31 +24,16 @@ class bffInclusivePreselProducer_noJet(Module):
     self.lep_1 = ROOT.TLorentzVector()
     self.lep_2 = ROOT.TLorentzVector()
     self.alljetSel = lambda j: ((j.pt > 20) & (abs(j.eta) < 2.4) & ((j.jetId >> 1) & 1) & ((j.puId & 1) | (j.pt>50)))
-    self.isMC = True
-    self.btagWP = btagWP
-    def deepcsv(jet):
-        return jet.btagDeepB > self.btagWP
-    def deepflavour(jet):
-        return jet.btagDeepFlavB > self.btagWP
-        #set right filtering function
-    if btag_type=="deepcsv":
-        self.select_btag = deepcsv
-    elif btag_type=="deepflavour":
-        self.select_btag = deepflavour
-
-    pass
-  
+    pass  
   def beginJob(self):
     pass
   def endJob(self):
-    pass
-  
+    pass  
   def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
     if wrappedOutputTree.tree().GetListOfBranches().FindObject("Jet_btagSF"):
         self.isMC = True
     else: 
         self.isMC = False
-
     self.out = wrappedOutputTree
     self.out.branch("DiLepMass", "F")
     self.out.branch("DiLepPt", "F")
@@ -102,14 +87,14 @@ class bffInclusivePreselProducer_noJet(Module):
     self.out.fillBranch("DiLepPt", self.diLepPt)
     return True
   
-  def selectDiMu_noJet(self, electrons, muons):
+  def selectDiMu_noJet(self, electrons, muons, jets):
     if len(muons) != 2:
       return False
     if len(electrons) != 0:
       return False
     if (muons[0].charge+muons[1].charge) != 0:
       return False
-    if len(Jet) != 0:
+    if len(jets) != 0:
       return False    #requires no additional jets
     self.lep_1 = muons[0].p4()*(muons[0].pt_corrected/muons[0].pt)
     self.lep_2 = muons[1].p4()*(muons[1].pt_corrected/muons[1].pt)
@@ -144,9 +129,11 @@ class bffInclusivePreselProducer_noJet(Module):
     electronsLowPt = sorted(filter(lambda x: self.eleSel(x,24), Collection(event, "Electron")), key=lambda x: x.pt)
     muonsLowPt = sorted(filter(lambda x: self.muSel(x,24), Collection(event, "Muon")), key=lambda x: x.pt_corrected)
 
+    jets = sorted(filter(lambda x: self.alljetSel, Collection(event, "Jet")), key=lambda x: x.pt)
+    
     isDiMu = self.selectDiMu(electrons, muons)
     isDiEle = self.selectDiEle(electrons, muons)
-    isDiMu_noJet = self.selectDiMu_noJet(electrons, muons)
+    isDiMu_noJet = self.selectDiMu_noJet(electrons, muons, jets)
     isEleMu = self.selectEleMu(electrons, muons)
 
     nLowPtLep = len(electronsLowPt)+len(muonsLowPt)
