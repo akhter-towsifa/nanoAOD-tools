@@ -96,7 +96,7 @@ class heepV72018PromptProducer(Module):
         Electron_cutBased_HEEPV7p0_2018Prompt = list(map(lambda x: passes_heepV72018Prompt_cuts(x, rho), electrons))
         if self.verbose: 
             for heep_2018, electron in zip(Electron_cutBased_HEEPV7p0_2018Prompt, electrons):
-                print "{},{},{},{}".format(electron.pt, electron.eta, int(heep_2018), int(electron.cutBased_HEEP))
+                print("{},{},{},{}".format(electron.pt, electron.eta, int(heep_2018), int(electron.cutBased_HEEP)))
         #fill new branch
         self.out.fillBranch("Electron_cutBased_HEEPV7p0_2018Prompt", Electron_cutBased_HEEPV7p0_2018Prompt)
         return True

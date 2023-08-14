@@ -1,9 +1,17 @@
 # nanoAOD-tools
+## Checkout instructions: CMSSW
+
+    cd $CMSSW_BASE/src
+    git clone git@github.com:akhter-towsifa/nanoAOD-tools.git -b Run_2022 PhysicsTools/NanoAODTools
+    cd PhysicsTools/NanoAODTools
+    cmsenv
+    scram b
+
 Tools for working with NanoAOD (requiring only python + root, not CMSSW)
 
 ## Checkout instructions: standalone
-
-You need to setup python 2.7 and a recent ROOT version first.
+Tools for working with NanoAOD (requiring only python + root, not CMSSW)
+You need to setup python 3 and a recent ROOT version first.
 
     git clone https://github.com/cms-nanoAOD/nanoAOD-tools.git NanoAODTools
     cd NanoAODTools
@@ -14,13 +22,6 @@ Repeat only the last command at the beginning of every session.
 
 Please never commit neither the build directory, nor the empty init.py files created by the script.
 
-## Checkout instructions: CMSSW
-
-    cd $CMSSW_BASE/src
-    git clone git@github.com:rymuelle/nanoAOD-tools.git PhysicsTools/NanoAODTools
-    cd PhysicsTools/NanoAODTools
-    cmsenv
-    scram b
 
 ## General instructions to run the post-processing step
 
